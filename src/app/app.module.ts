@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA, Injectable } from '@angular/core';
 
 
 import { Controller } from './app.component';
@@ -50,6 +50,7 @@ import {FaceDetectionComponent} from "./components/face-detection/face-detection
 import { ErrorHandler } from '@angular/core';
 import { Notifier } from '@airbrake/browser';
 
+@Injectable()
 export class AirbrakeErrorHandler implements ErrorHandler {
   airbrake: Notifier;
 
