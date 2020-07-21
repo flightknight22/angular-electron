@@ -22,7 +22,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": ["youtube.js", "tsCompile.js"],
             "customWebpackConfig": {
               "path": "./angular.webpack.js"
             }

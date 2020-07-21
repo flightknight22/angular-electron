@@ -40,7 +40,6 @@ import { AlertComponent } from './alert/alert.component';
 
 
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 import { ConnectionsPageComponent } from './menu/connections-page/connections-page.component';
 import { GeneralPageComponent } from './menu/general-page/general-page.component';
 import {SettingsService} from "../providers/settings-service";
@@ -49,6 +48,7 @@ import {FacePageComponent} from './menu/face-page/face-page.component';
 import {FaceDetectionComponent} from "./components/face-detection/face-detection.component";
 import { ErrorHandler } from '@angular/core';
 import { Notifier } from '@airbrake/browser';
+import {AppConfig} from "../environments/environment";
 
 @Injectable()
 export class AirbrakeErrorHandler implements ErrorHandler {
@@ -101,7 +101,7 @@ export class AirbrakeErrorHandler implements ErrorHandler {
     BrowserAnimationsModule,
     BrowserAnimationsModule,
     FormsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: AppConfig.production })
   ],
   providers: [ScheduleService, CommandService, AffidavitService, HeartbeatService, SmartScheduleService,
     TemplateService, TimezoneTranslateService, PlatformResolverService, SettingsService, FormBuilder, ImpressionService, {provide: ErrorHandler, useClass: AirbrakeErrorHandler}],
