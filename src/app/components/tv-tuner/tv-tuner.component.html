@@ -1,0 +1,5 @@
+
+<video hwz="on" [src]="url" [style.height]="this.height" [style.width]="this.width" *ngIf="isStarted && isStream" autoplay loop></video>
+<video hwz="on" *ngIf="isStarted && !isStream" [style.height]="this.height" [style.width]="this.width">
+  <source src="tv:brightsign.biz/hdmi">
+</video>

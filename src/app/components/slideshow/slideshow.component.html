@@ -1,0 +1,4 @@
+<div id="cf" style="position: relative" width="100%" height="100%">
+  <img id="imgTwo" (error)="next('error2')" (load)="fadeInElm(2, secondUrl)" #imgTwo style="position: absolute" width="100%" height="100%" src="{{secondUrl}}"/>
+  <img id="imgOne" (error)="next('error1')" (load)="fadeInElm(1, firstUrl)" #imgOne style="position: absolute" width="100%" height="100%" src="{{firstUrl}}" />
+</div>

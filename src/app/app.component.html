@@ -1,1 +1,67 @@
-<router-outlet></router-outlet>
+
+<ng-template #loading>Loading User Data...</ng-template>
+
+
+<ng-template #container class="totalScreen" style="position: relative" >
+
+</ng-template>
+
+<app-menu *ngIf="showSettings" style="position: absolute; z-index: 999"></app-menu>
+
+<div id="downloading" class="screen" style="background: transparent!important;" *ngIf="downloading">
+  <div style="position: absolute; bottom: 0; right: 0;" class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+</div>
+
+<div id="activation" class="screen" *ngIf="currentActivationCode">
+  <img class="center" style="height: 35%" src="{{platform.getAssetsPath()}}/assets/img/reveldigital-icon.png">
+  <h1 class="center" style="font-size: 4.2em; width: 100%">{{currentActivationCode}}</h1>
+  <img class="center" border="5"  [src]="'https://svc1.reveldigital.com/Render/QRCode?text='+currentActivationCode+'&w=200&h=200&fg=ffffff&bg=0'"/>
+</div>
+
+<div id="loading" class="screen" *ngIf="loading && !_currentSchedule  && !loadingError && !currentActivationCode">
+  <div class="center lds-ring loading"><div></div><div></div><div></div><div></div></div>
+</div>
+
+<div id="error" class="screen" *ngIf="loadingError && !_currentSchedule">
+  <img class="center revel-logo" src="../assets/img/reveldigital-icon.svg">
+  <div class="lds-ring errorRing"><div></div><div></div><div></div><div></div></div>
+  <h1 style="position:absolute; top:0; left: 15px">Error...Will Reload In {{timer}} Seconds</h1>
+  <div style="position:absolute; bottom:0%; right:15px; color: black">
+    <p style="font-size: medium" >Things To Test</p>
+    <ol>
+      <li>
+        Player Has A Valid Network Connection
+      </li>
+      <li>
+        Player Has Been Registered
+      </li>
+      <li>
+        Player Has Not Been Deleted From Revel CMS
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div id="nothing" class="screen" *ngIf="nothing">
+  <h1 style="position:absolute; top:0; left: 0">Nothing To Play</h1>
+</div>
+
+<div id="preview" *ngIf="preview">
+  <h1 style="position:absolute; top:0; background-color: rgba(0,0,0,0.3); padding: 20px; right: 10px; color:white">Preview {{countDown}}</h1>
+</div>
+
+<div id="previewEnd" class="screen" style="background: black!important;" *ngIf="previewEnded">
+  <h1 style="position:absolute; top:0; right: 10px">Preview Ended</h1>
+</div>
+
+
+<dialog #dialog class="mdl-dialog" style="width: 400px!important;">
+  <h4 class="mdl-dialog__title">Player Restarting</h4>
+  <div class="mdl-dialog__content">
+    <p>
+      Settings have changed. Player will restart to apply new settings.
+    </p>
+  </div>
+</dialog>
+
+

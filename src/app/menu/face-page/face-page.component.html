@@ -1,0 +1,66 @@
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--4-col">
+    <ul class="demo-list-control mdl-list">
+      <li class="mdl-list__item">
+      <span  class="mdl-list__item-primary-content">
+        <i class="material-icons  mdl-list__item-avatar">person</i>
+        Face Analytics
+      </span>
+        <span class="mdl-list__item-secondary-action">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
+          <input [checked]="currentSettings.general['face detection'].enabled" (change)="settingsChange('enabled', null)" type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" />
+        </label>
+
+      </span>
+      </li>
+      <li  class="mdl-list__item mdl-list__item--two-line">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons  mdl-list__item-avatar">autorenew</i>
+        <span>Scan Interval </span>
+        <span class="mdl-list__item-sub-title">
+            {{currentSettings.general["face detection"].rate}} ms
+        </span>
+      </span>
+        <span class="mdl-list__item-secondary-action">
+
+        <button (click)="showIntervalDialog()" class="mdl-button mdl-js-button mdl-button--icon">
+          <i class="material-icons">edit</i>
+        </button>
+
+      </span>
+      </li>
+      <li style="color: orange">
+        * Any settings changes will take effect on reload
+      </li>
+
+    </ul>
+  </div>
+
+
+
+</div>
+<div style="display: flex; flex-direction: column" id="reset-player">
+  <button  style="background: #f44336!important; margin-bottom: 5px" (click)="showFaceDialog()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+    Test Camera
+  </button>
+
+</div>
+
+<dialog #faceDialog id="face" class="mdl-dialog" style="width: 100vw!important; background: rgba(0,0,0,0.2)" (click)="closeFaceDialog()">
+  <div class="mdl-dialog__actions" >
+    <button type="button" style="margin: 12px" (click)="closeFaceDialog()" class="mdl-button close">Close</button>
+  </div>
+</dialog>
+
+<dialog #intervalDialog class="mdl-dialog" style="width: 1000px!important;">
+  <h4 class="mdl-dialog__title">Scan Rate(ms)</h4>
+  <div class="mdl-dialog__content">
+    <div class="mdl-textfield mdl-js-textfield">
+      <input [(ngModel)]="currentSettings.general['face detection'].rate" #select  (change)="settingsChange('rate', select.value)" class="mdl-textfield__input" type="text" id="password">
+      <label class="mdl-textfield__label" for="password">rate</label>
+    </div>
+  </div>
+  <div class="mdl-dialog__actions" >
+    <button type="button" (click)="closeIntervalDialog()" class="mdl-button close">Close</button>
+  </div>
+</dialog>

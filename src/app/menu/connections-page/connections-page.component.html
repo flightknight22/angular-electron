@@ -1,0 +1,40 @@
+<div class="container">
+  <div>
+    <div [style.background]="completed.length==data.length ? '#33ad52' : error.length>0? '#c77d18': ''"  style="margin-top: 150px" class="mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+        <h2 *ngIf="completed.length!==data.length && error.length==0" class="mdl-card__title-text">Checking Network...</h2>
+        <h2 *ngIf="completed.length==data.length" style="color: white" class="mdl-card__title-text">Test Successful!</h2>
+        <h2 *ngIf="error.length>0" style="color: white"  class="mdl-card__title-text">There's a problem!</h2>
+      </div>
+      <div *ngIf="completed.length!==data.length && error.length==0" class="mdl-card__supporting-text">
+        Checking your network to ensure all Revel services can be reached.
+      </div>
+      <div *ngIf="completed.length==data.length" style="color: white"  class="mdl-card__supporting-text">
+        All endpoints are reachable from this network.
+      </div>
+      <div *ngIf="error.length>0" style="color: white"  class="mdl-card__supporting-text">
+        Some endpoints were not reachable from this network
+      </div>
+      <div style="padding: 0; margin: 0; border-top: solid grey 2px; background: white" class="mdl-list">
+        <div *ngFor="let item of data" class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">
+              <span>{{item.name}}</span>
+            </span>
+            <span class="mdl-list__item-secondary-content">
+
+              <a class="mdl-list__item-secondary-action"><div *ngIf="!isError(item) && !isSuccess(item)" class="lds-ring"><div></div><div></div><div></div><div></div></div><i *ngIf="isSuccess(item)" style="color: green" class="material-icons">check</i><i *ngIf="isError(item)" style="color: orange" class="material-icons">warning</i></a>
+          </span>
+        </div>
+        <div class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">
+              <span>Pusher Command Service</span>
+            </span>
+          <span class="mdl-list__item-secondary-content">
+              <a class="mdl-list__item-secondary-action">{{currentStatus}}</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

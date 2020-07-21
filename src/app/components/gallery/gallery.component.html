@@ -1,0 +1,16 @@
+<div class="container" #gallery style="position: relative; width:100%; height: 100%">
+  <div  *ngIf="isStarted" style="width:100%; height: 100%">
+    <img (error)="next('error', $event)" (load)="fadeInElm()" class='media' *ngIf="currentSource.type == 'Image'  || currentSource.type == 'Svg'" [src]="resolveURI(currentSource) | safeHtml:'resourceUrl'"/>
+    <video (error)="next('error', $event)" onloadedmetadata="this.muted = true" (pause)="setVideoTimeout()" (playing)="clearVideoTimeout()" #vid autoplay muted  class='media' (canplay)="vidTest(vid)" (ended)="resumeCycle('success')" *ngIf="currentSource.type == 'Video'" >
+      <source [src]="resolveVideoURI(currentSource) | safeHtml:'resourceUrl'">
+    </video>
+    <audio  #audio (loadstart)="setVolumeEl(audio)" (error)="next('error', $event)" (load)="fadeInElm()" autoplay="autoplay" muted *ngIf="currentSource.type == 'Audio'" class='media' (ended)="resumeCycle('success')">
+      <source [src]="resolveAudioURI(currentSource) | safeHtml:'resourceUrl'" type="{{currentSource.file.mimetype}}">ls
+    </audio>
+    <app-webview (error)="next('error', $event)" (load)="fadeInElm()" *ngIf="currentSource.type == 'WebPage'" class='media' [uri]="currentSource.value" [height]="this.height+''" [width]="this.width+''"></app-webview>
+    <app-webview (error)="next('error', $event)" (load)="fadeInElm()" *ngIf="currentSource.type == 'Gadget'" class='media' [uri]="currentSource.file.gadget.url" [isGadget]="true" [options]="currentSource.file.gadget.option" [height]="this.height+''" [width]="this.width+''"></app-webview>
+    <app-youtube (onReady)="fadeInElm()" *ngIf="currentSource.type == 'YouTube'" (onCompleted)="resumeCycle($event)" [volume]="audioVolume+''" [height]="this.height+''" [width]="this.width+''" [vidID]="currentSource.value"></app-youtube>
+    <app-template [injectedTemplate]="currentSource.template" (load)="fadeInElm()" class='media' *ngIf="currentSource.type == 'Template' && currentSource.template.module"></app-template>
+    <div *ngIf="currentSource.type == 'None'"></div>
+  </div>
+</div>

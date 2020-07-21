@@ -1,0 +1,56 @@
+:host{
+  overflow: auto;
+  overflow-y: scroll;
+  overflow-x:hidden;
+}
+
+
+::-webkit-scrollbar {
+  width: 0px;  /* remove scrollbar space */
+  background: transparent;  /* optional: just make scrollbar invisible */
+}
+/* optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #FF0000;
+}
+
+
+
+div {
+  z-index: 50;
+  background: #9e978e;
+  display: inline-block;
+  margin: 0 1em 1em 0;
+}
+
+.top,
+.bottom {
+  height: 45px;
+  width: 90px;
+}
+
+.right,
+.left {
+  height: 45px;
+  width: 90px;
+}
+
+.top {
+  border-top-left-radius: 90px;
+  border-top-right-radius: 90px;
+}
+
+.right {
+  border-bottom-right-radius: 90px;
+  border-top-right-radius: 90px;
+}
+
+.bottom {
+  border-bottom-left-radius: 90px;
+  border-bottom-right-radius: 90px;
+}
+
+.left {
+  border-bottom-left-radius: 90px;
+  border-top-left-radius: 90px;
+}

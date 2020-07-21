@@ -1,0 +1,4 @@
+<iframe (error)="timeout" [id]="frameId"  *ngIf="uri" scrolling="no" allowtransparency="true" frameborder="0" [src]="uri | safeHtml: 'resourceUrl'" [attr.style]="style | safeHtml: 'style'"></iframe>
+<div #iframe [attr.style]="divStyle | safeHtml: 'style'">
+  <div [innerHTML]="html | safeHtml: 'html'" [attr.style]="style | safeHtml: 'style'"></div>
+</div>

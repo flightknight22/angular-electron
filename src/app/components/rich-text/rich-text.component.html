@@ -1,0 +1,2 @@
+<img *ngIf="!native" (error)="timeout()" width='100%' height='100%' [src]="url | safeHtml:'resourceUrl'">
+<div id="native-container" style="height: 100%; overflow: hidden;" [innerHTML]="html | safeHtml:'html'" [style.display]="native? '':'none'">4444</div>

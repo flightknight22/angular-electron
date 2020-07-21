@@ -1,0 +1,14 @@
+<img style="padding: 10px; height: 25%" class="center" src="../../assets/img/alert.png">
+<h1 [style.font-size]="'10vw'" [style.height]="textHeight+'px'" style="color: white; margin: 0; width: 100%" class="center">{{alert.Message}}</h1>
+
+
+
+
+<marquee style="bottom: 0!important; position: absolute;" behavior="scroll" direction="left" [attr.scrollamount]="25" style="position: absolute; width: 100%; height: 200px">
+    <img onerror="this.style.display='none'" onload="this.style.display='block'"  src="https://svc1.reveldigital.com/Render/Text?text={{alert.Detail}}&w=0&h=200&font=Arial&fg=fff&bg="/>
+</marquee>
+
+
+<audio autoplay loop *ngIf="alert.IsAudible">
+  <source src="../../assets/tones/warningtone.mp3" type="audio/mpeg">
+</audio>

@@ -1,0 +1,5 @@
+<div>
+  <div #container *ngIf="!native" [style.position]='position' [style.left]='left' [style.right]='right' [style.margin]='margin'
+       [style.display]='display' ><img (error)="timeout()" [src]="src | safeHtml:'resourceUrl'"/></div>
+  <div #container style="overflow: hidden" [style.font-size]="fontSize" *ngIf="native">{{text}}</div>
+</div>

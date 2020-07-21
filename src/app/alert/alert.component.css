@@ -1,0 +1,9 @@
+marquee{
+  bottom: 0;
+}
+.center {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+  text-align: center;
+}

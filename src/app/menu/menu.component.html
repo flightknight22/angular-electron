@@ -1,0 +1,53 @@
+<div class="menu-container">
+  <div class="revel-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+    <header class="revel-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+      <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">{{currentSelection}}</span>
+        <div class="mdl-layout-spacer"></div>
+        <i class="material-icons closeButton" (click)="close()">close</i>
+      </div>
+    </header>
+    <div class="revel-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+      <header style="position: relative" class="revel-drawer-header">
+        <img class="revel-logo" src="https://www.reveldigital.com/images/presskit/reveldigital-logo-white-text.png">
+        <p style="position: absolute; right: 2px; bottom: 0; margin: 0">Vers. {{version}}</p>
+      </header>
+      <nav class="revel-navigation mdl-navigation mdl-color--blue-grey-800">
+        <a id="general" class="mdl-navigation__link" (click)="currentSelection='General'" ><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>General</a>
+        <a id="connections" class="mdl-navigation__link" (click)="currentSelection='Connections'"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">wifi</i>Connections</a>
+        <a id="face" class="mdl-navigation__link" (click)="currentSelection='Face Analytics'"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">face</i>Face Analytics</a>
+        <div class="mdl-layout-spacer"></div>
+        <a class="mdl-navigation__link" (click)="showDialog()"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
+      </nav>
+    </div>
+    <main class="mdl-layout__content mdl-color--grey-100">
+        <app-general-page class="page" *ngIf="currentSelection == 'General'"></app-general-page>
+        <app-connections-page class="page" *ngIf="currentSelection == 'Connections'"></app-connections-page>
+      <app-face-page class="page" *ngIf="currentSelection == 'Face Analytics'"></app-face-page>
+    </main>
+  </div>
+</div>
+
+<dialog #dialog class="mdl-dialog" style="width: 400px!important;">
+  <h4 class="mdl-dialog__title">Contact Revel Digital</h4>
+  <div class="mdl-dialog__content">
+    <p>
+      <b>Phone:</b> 1-855-738-3534
+    </p>
+    <p>
+      <b>Support</b> Email: support@reveldigital.com
+    </p>
+    <p>
+      <b>Sales Email:</b> sales@reveldigital.com
+    </p>
+    <p>
+      <b>Website:</b> https://www.reveldigital.com
+    </p>
+  </div>
+  <div class="mdl-dialog__actions" >
+    <button type="button" (click)="closeDialog()" class="mdl-button close">Okay</button>
+  </div>
+</dialog>
+
+
+

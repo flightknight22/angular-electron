@@ -1,0 +1,228 @@
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--4-col">
+    <ul class="demo-list-control mdl-list">
+      <li *ngIf="settingService.settingAvailable('network sync')" class="mdl-list__item">
+      <span  class="mdl-list__item-primary-content">
+        <i class="material-icons  mdl-list__item-avatar">sync</i>
+        Network Synchronization
+      </span>
+        <span class="mdl-list__item-secondary-action">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
+          <input [checked]="currentSettings[settingService.getSettingsPlatform()]['network sync']" (change)="settingsChange('network sync', null)" type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" />
+        </label>
+      </span>
+      </li>
+      <li *ngIf="settingService.settingAvailable('mouse on')" class="mdl-list__item">
+      <span  class="mdl-list__item-primary-content">
+        <i class="material-icons  mdl-list__item-avatar">mouse</i>
+        Show Cursor
+      </span>
+        <span class="mdl-list__item-secondary-action">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-5">
+          <input [checked]="currentSettings.brightsign['mouse on']" (change)="settingsChange('mouse on', null)" type="checkbox" id="list-checkbox-5" class="mdl-checkbox__input" />
+        </label>
+      </span>
+      </li>
+      <li *ngIf="settingService.settingAvailable('hardwareAcceleration')" class="mdl-list__item">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons  mdl-list__item-avatar">memory</i>
+        Hardware Acceleration
+      </span>
+        <span class="mdl-list__item-secondary-action">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-2">
+          <input [checked]="currentSettings.brightsign['hardwareAcceleration']" (change)="settingsChange('hardwareAcceleration', null)" type="checkbox" id="list-checkbox-2" class="mdl-checkbox__input" />
+        </label>
+      </span>
+      </li>
+      <li *ngIf="settingService.settingAvailable('include snapshot')" class="mdl-list__item">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons  mdl-list__item-avatar">speaker_phone</i>
+        Send Snapshot In Ping
+      </span>
+        <span class="mdl-list__item-secondary-action">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-3">
+          <input [checked]="currentSettings.general['include snapshot']" (change)="settingsChange('include snapshot', null)" type="checkbox" id="list-checkbox-3" class="mdl-checkbox__input" />
+        </label>
+      </span>
+      </li>
+<!--      <li *ngIf="settingService.settingAvailable('serial-bs')" class="mdl-list__item mdl-list__item&#45;&#45;two-line">-->
+<!--      <span class="mdl-list__item-primary-content">-->
+<!--        <i class="material-icons  mdl-list__item-avatar">usb</i>-->
+<!--        <span>Enable Serial</span>-->
+<!--        <span class="mdl-list__item-sub-title">-->
+<!--        </span>-->
+<!--      </span>-->
+<!--        <span class="mdl-list__item-secondary-action">-->
+<!--        <button (click)="showSerialDialog()" class="mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
+<!--          <i class="material-icons">edit</i>-->
+<!--        </button>-->
+<!--      </span>-->
+<!--      </li>-->
+        <li *ngIf="settingService.settingAvailable('serial')" class="mdl-list__item mdl-list__item--two-line">
+        <span class="mdl-list__item-primary-content">
+          <i class="material-icons  mdl-list__item-avatar">usb</i>
+          <span>Enable Serial</span>
+          <span class="mdl-list__item-sub-title">
+          </span>
+        </span>
+          <span class="mdl-list__item-secondary-action">
+          <button (click)="showSerialDialog()" class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">edit</i>
+          </button>
+        </span>
+        </li>
+    </ul>
+  </div>
+  <div class="mdl-cell mdl-cell--4-col">
+    <ul class="demo-list-control mdl-list">
+      <li class="mdl-list__item mdl-list__item--two-line" *ngFor="let item of networkInfo">
+        <span class="mdl-list__item-primary-content">
+          <i class="material-icons mdl-list__item-avatar">{{item.icon}}</i>
+          <span>{{item.name}}</span>
+          <span class="mdl-list__item-sub-title">{{item.value}}</span>
+        </span>
+      </li>
+      <li *ngIf="settingService.settingAvailable('wifi')" class="mdl-list__item mdl-list__item--two-line">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons  mdl-list__item-avatar">signal_wifi_4_bar</i>
+        <span>Wifi Network</span>
+        <span class="mdl-list__item-sub-title">
+            {{currentSettings.brightsign.wifi.essId}}
+        </span>
+      </span>
+        <span class="mdl-list__item-secondary-action">
+
+        <button (click)="showWifiDialog()" class="mdl-button mdl-js-button mdl-button--icon">
+          <i class="material-icons">edit</i>
+        </button>
+
+      </span>
+      </li>
+    </ul>
+  </div>
+  <div class="mdl-cell mdl-cell--4-col">
+    <ul class="demo-list-control mdl-list">
+      <li class="mdl-list__item mdl-list__item--two-line" *ngFor="let item of screenInfo">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-avatar">{{item.icon}}</i>
+        <span>{{item.name}}</span>
+        <span class="mdl-list__item-sub-title">{{item.value}}</span>
+      </span>
+      </li>
+      <li *ngIf="settingService.settingAvailable('orientation')" class="mdl-list__item mdl-list__item--two-line" >
+        <span class="mdl-list__item-primary-content">
+          <i class="material-icons mdl-list__item-avatar">stay_primary_landscape</i>
+          <span>Screen Orientation</span>
+          <span class="mdl-list__item-sub-title">
+            <select class="mdl-selectfield__select" #select [(ngModel)]="currentSettings.brightsign.orientation" (change)="settingsChange('orientation', select.value)" id="orientation" name="orientation">
+              <option value="auto">Auto Rotate</option>
+              <option value="0">Landscape</option>
+              <option value="90">Portrait</option>
+              <option value="270">Reverse Portrait</option>
+            </select>
+          </span>
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mdl-cell mdl-cell--4-col">
+    <ul class="demo-list-control mdl-list" style="width: 380px!important;">
+      <li class="mdl-list__item mdl-list__item--two-line" *ngFor="let item of deviceInfo">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-avatar">{{item.icon}}</i>
+      <span>{{item.name}}</span>
+      <span class="mdl-list__item-sub-title">{{item.value}}</span>
+    </span>
+      </li>
+    </ul>
+  </div>
+
+
+
+
+
+
+</div>
+
+
+  <div style="display: flex; flex-direction: column" id="reset-player">
+    <button style="background: #238ec7!important; margin-bottom: 5px" (click)="reloadPlayer()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--accent">
+      Reload Player
+    </button>
+    <button  style="background: #f44336!important; " (click)="showDialog()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+      Reset Player
+    </button>
+  </div>
+
+
+<dialog #serialDialog class="mdl-dialog" style="width: 400px!important;">
+  <h4 class="mdl-dialog__title">Edit Serial Settings</h4>
+
+
+  <div class="mdl-dialog__content">
+    <select class=" mdl-selectfield__select" #select [(ngModel)]="currentSettings.linux['serial-general'].path" (change)="settingsChange('serial-general', select.value)" id="path" name="path">
+      <option *ngFor="let val of paths"  [value]="val">{{val}}</option>
+    </select>
+  </div>
+  <div class="mdl-textfield mdl-js-textfield">
+    <input type="number" [(ngModel)]="currentSettings.linux['serial-general']['baudRate']" #select  (change)="settingsChange('serial-general', select.value)" class="mdl-textfield__input" type="text" id="baud">
+    <label class="mdl-textfield__label" for="baud">Baud Rate...</label>
+  </div>
+<!--  <div class="mdl-textfield mdl-js-textfield">-->
+<!--    <input [(ngModel)]="currentSettings.brightsign['serial-bs']['Ending Line']" #select  (change)="settingsChange('serial-bs', select.value)" class="mdl-textfield__input" type="text" id="line">-->
+<!--    <label class="mdl-textfield__label" for="line">Ending Char...</label>-->
+<!--  </div>-->
+<!--  <div class="mdl-textfield mdl-js-textfield">-->
+<!--    <input type="number" [(ngModel)]="currentSettings.brightsign['serial-bs']['Data Bits']" #select  (change)="settingsChange('serial-bs', select.value)" class="mdl-textfield__input" type="text" id="data">-->
+<!--    <label class="mdl-textfield__label" for="data">Data Bits...</label>-->
+<!--  </div>-->
+<!--  <div class="mdl-textfield mdl-js-textfield">-->
+<!--    <input type="number" [(ngModel)]="currentSettings.brightsign['serial-bs']['Stop Bits']" #select  (change)="settingsChange('serial-bs', select.value)" class="mdl-textfield__input" type="text" id="stop">-->
+<!--    <label class="mdl-textfield__label" for="stop">Stop Bits...</label>-->
+<!--  </div>-->
+<!--  <div class="mdl-textfield mdl-js-textfield">-->
+<!--    <input [(ngModel)]="currentSettings.brightsign['serial-bs']['Parity']" #select  (change)="settingsChange('serial-bs', select.value)" class="mdl-textfield__input" type="text" id="parity">-->
+<!--    <label class="mdl-textfield__label" for="parity">parity...</label>-->
+<!--  </div>-->
+<!--  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">-->
+<!--    <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" [checked]="currentSettings.brightsign.serial" (change)="settingsChange('serial', null)">-->
+<!--    <span class="mdl-checkbox__label">Serial Enabled</span>-->
+<!--  </label>-->
+
+  <p style="font-weight: 100">* note some options may not be available on this device</p>
+  <div class="mdl-dialog__actions" >
+    <button type="button" (click)="closeSerialDialog()" class="mdl-button close">Close</button>
+  </div>
+</dialog>
+
+<dialog #wifiDialog class="mdl-dialog" style="width: 400px!important;">
+  <h4 class="mdl-dialog__title">Edit Wifi Settings</h4>
+  <div class="mdl-dialog__content">
+    <select class="mdl-selectfield__select" #select [(ngModel)]="currentSettings.brightsign.wifi.essId" (change)="settingsChange('wifi', select.value)" id="wifi" name="wifi">
+      <option *ngFor="let network of wifiScanList" value="{{network.essId}}">{{network.essId}}</option>
+    </select>
+    <div class="mdl-textfield mdl-js-textfield">
+      <input [(ngModel)]="currentSettings.brightsign.wifi.passphrase" #select  (change)="settingsChange('wifi', select.value)" class="mdl-textfield__input" type="text" id="password">
+      <label class="mdl-textfield__label" for="password">Passphrase...</label>
+    </div>
+  </div>
+  <div class="mdl-dialog__actions" >
+    <button type="button" (click)="closeWifiDialog()" class="mdl-button close">Close</button>
+    <button type="button" (click)="scanForWifi()" class="mdl-button close">Scan</button>
+  </div>
+</dialog>
+
+
+<dialog #dialog class="mdl-dialog" style="width: 400px!important;">
+  <h4 class="mdl-dialog__title">Clear All Player Data?</h4>
+  <div class="mdl-dialog__content">
+    <p>
+      This option cannot be undone. All media, device information and affidavit information will be delete <b>Permanently</b>
+    </p>
+  </div>
+  <div class="mdl-dialog__actions" >
+    <button style="color: red!important;" type="button" (click)="clearPlayer()" class="mdl-button">Clear Data</button>
+    <button type="button" (click)="closeDialog()" class="mdl-button close">Cancel</button>
+  </div>
+</dialog>

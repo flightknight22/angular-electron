@@ -1,0 +1,3 @@
+#!/bin/bash
+
+typedoc ./src --out ./doc --module commonjs --target ES6 --hideGenerator --mode file --readme none --theme minimal --excludePrivate --exclude "**/*+(e2e|spec|index|service|pipe|youtube.component|environment.prod|environment|alert.component|webview.component|dialog|app.module).ts" --readme ../README.md 

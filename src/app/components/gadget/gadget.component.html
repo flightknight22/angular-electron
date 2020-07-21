@@ -1,0 +1,1 @@
+<iframe #gadget (error)="timeout" (load)="loadedCB()" [id]="id" *ngIf="uri" height="100%" width="100%" scrolling="no" allowtransparency="true" frameborder="0" [src]="uri | safeHtml: 'resourceUrl'"></iframe>

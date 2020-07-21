@@ -1,0 +1,1 @@
+<iframe (error)="onError()" (load)="onLoad()" class='media' *ngIf="uri && !isChrome" scrolling="no" allowtransparency="true" frameborder="0" [src]="(uri | safeHtml: 'resourceUrl')+''" [attr.style]="style | safeHtml: 'style'"></iframe>
