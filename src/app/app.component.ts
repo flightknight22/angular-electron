@@ -356,9 +356,9 @@ export class Controller implements OnDestroy {
       let interval = 1000;
 
       setInterval(()=>{
-        duration = moment.duration(duration - interval, 'milliseconds');
+        duration = moment.duration(duration.asSeconds() - interval, 'milliseconds');
 
-        let secs = duration.seconds();
+        let secs = duration.seconds().toString();
         if(secs.toString().length!=2){
           secs = '0'+secs.toString()
         }
@@ -515,7 +515,8 @@ export class Controller implements OnDestroy {
             localStorage.setItem('lastModified', data.headers.get("last-modified"));
             data = data.body;
             if (data && data.reveldigital && data.reveldigital.timezone) {
-              moment.tz.setDefault(this.timezoneTranslateService.setTimezone(data.reveldigital.timezone));
+              let t:any =this.timezoneTranslateService.setTimezone(data.reveldigital.timezone)
+              moment.tz.setDefault(t);
             }
             this.loading = false;
             this._currentSchedule = data;
@@ -552,7 +553,8 @@ export class Controller implements OnDestroy {
     window['debugLog']('local schedule initialized');
     if(data && verifyPackage()) {
       if (data.reveldigital && data.reveldigital.timezone) {
-        moment.tz.setDefault(this.timezoneTranslateService.setTimezone(data.reveldigital.timezone));
+        let t:any =this.timezoneTranslateService.setTimezone(data.reveldigital.timezone)
+        moment.tz.setDefault(t);
       }
       this.loading = false;
       this._currentSchedule = data;
