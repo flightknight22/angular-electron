@@ -32,8 +32,7 @@ export class GalleryComponent extends BaseComponent implements OnInit, OnDestroy
   currentRestCalls = 0;
   /** @hidden*/
   currentLoadedRss = [];
-  /** @hidden*/
-  Feed = require('rss-to-json');
+
   /** @hidden*/
   timer: Observable<any>;
   /** @hidden*/
@@ -484,31 +483,31 @@ export class GalleryComponent extends BaseComponent implements OnInit, OnDestroy
   /** @hidden*/
   getRSS(url, id, interval, conditions) {
       const tmpArray=[];
-      this.Feed.load(this.corsUrl + url, (err, rss) => {
-
-       for(const val of rss.items) {
-         if(val.enclosures && val.enclosures.length>0 && val.enclosures[0].hasOwnProperty('url')) {
-             let type = 'Image';
-             if (val.enclosures[0].type.indexOf('video')>-1) {
-               type = 'Video';
-             }
-             const json = {value:val.enclosures[0].url, type:type,
-               timestamp:Date.now(), rssID:id, id:id, interval:interval, conditions:conditions};
-             tmpArray.push(json);
-           }
-         }
-        this.currentLoadedRss[id] = tmpArray;
-        this.currentRestCalls--;
-        if(this.currentRestCalls===0) {
-          this.injectSources();
-        }
-      },(err)=> {
-        console.log(err);
-        this.currentRestCalls--;
-        if(this.currentRestCalls===0) {
-          this.injectSources();
-        }
-      });
+      // Feed.load(this.corsUrl + url, (err, rss) => {
+      //
+      //  for(const val of rss.items) {
+      //    if(val.enclosures && val.enclosures.length>0 && val.enclosures[0].hasOwnProperty('url')) {
+      //        let type = 'Image';
+      //        if (val.enclosures[0].type.indexOf('video')>-1) {
+      //          type = 'Video';
+      //        }
+      //        const json = {value:val.enclosures[0].url, type:type,
+      //          timestamp:Date.now(), rssID:id, id:id, interval:interval, conditions:conditions};
+      //        tmpArray.push(json);
+      //      }
+      //    }
+      //   this.currentLoadedRss[id] = tmpArray;
+      //   this.currentRestCalls--;
+      //   if(this.currentRestCalls===0) {
+      //     this.injectSources();
+      //   }
+      // },(err)=> {
+      //   console.log(err);
+      //   this.currentRestCalls--;
+      //   if(this.currentRestCalls===0) {
+      //     this.injectSources();
+      //   }
+      // });
   }
   /** @hidden*/
   injectSources() {

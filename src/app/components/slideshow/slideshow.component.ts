@@ -57,8 +57,6 @@ export class SlideshowComponent extends BaseComponent implements OnInit, OnDestr
   /** @hidden*/
   currentLoadedRss = [];
   /** @hidden*/
-  Feed = require('rss-to-json');
-  /** @hidden*/
   pltName;
   /** @hidden*/
   rssTimer: Observable<any>;
@@ -456,35 +454,35 @@ export class SlideshowComponent extends BaseComponent implements OnInit, OnDestr
   getRSS(url, id, interval, conditions) {
 
     const tmpArray=[];
-    this.Feed.load(this.corsUrl + url, (err, rss) => {
-
-      for(const val of rss.items) {
-        if(val.enclosures && val.enclosures.length>0 && val.enclosures[0].hasOwnProperty('url')) {
-          let type = 'Image';
-          if (val.enclosures[0].type.indexOf('video')>-1) {
-            type = 'Video';
-          }
-          if(type === 'Image') {
-            const json = {
-              value: val.enclosures[0].url, type: type,
-              timestamp: Date.now(), rssID: id, id: id, interval: interval, conditions: conditions
-            };
-            tmpArray.push(json);
-          }
-        }
-      }
-      this.currentLoadedRss[id] = tmpArray;
-      this.currentRestCalls--;
-      if(this.currentRestCalls===0) {
-        this.injectSources();
-      }
-    },(err)=> {
-      console.log(err);
-      this.currentRestCalls--;
-      if(this.currentRestCalls===0) {
-        this.injectSources();
-      }
-    });
+    // Feed.load(this.corsUrl + url, (err, rss) => {
+    //
+    //   for(const val of rss.items) {
+    //     if(val.enclosures && val.enclosures.length>0 && val.enclosures[0].hasOwnProperty('url')) {
+    //       let type = 'Image';
+    //       if (val.enclosures[0].type.indexOf('video')>-1) {
+    //         type = 'Video';
+    //       }
+    //       if(type === 'Image') {
+    //         const json = {
+    //           value: val.enclosures[0].url, type: type,
+    //           timestamp: Date.now(), rssID: id, id: id, interval: interval, conditions: conditions
+    //         };
+    //         tmpArray.push(json);
+    //       }
+    //     }
+    //   }
+    //   this.currentLoadedRss[id] = tmpArray;
+    //   this.currentRestCalls--;
+    //   if(this.currentRestCalls===0) {
+    //     this.injectSources();
+    //   }
+    // },(err)=> {
+    //   console.log(err);
+    //   this.currentRestCalls--;
+    //   if(this.currentRestCalls===0) {
+    //     this.injectSources();
+    //   }
+    // });
   }
   /** @hidden*/
   injectSources() {

@@ -1,7 +1,15 @@
 import {
-  Component, ComponentFactoryResolver, ElementRef, EventEmitter, HostBinding, Injector, Input, OnDestroy, OnInit,
+  Component,
+  ComponentFactoryResolver,
+  ComponentRef,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  Injector,
+  Input,
+  OnDestroy,
+  OnInit,
   Output,
-  ReflectiveInjector,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -86,7 +94,7 @@ export class TemplateComponent implements OnInit, OnDestroy, ITemplate {
   /** @hidden*/
   model: any;
   /** @hidden*/
-  modules = [];
+  modules:any[] = [];
   /** @hidden*/
   @ViewChild('container', {read: ViewContainerRef, static:true}) template: ViewContainerRef;
   /** @hidden*/
@@ -97,13 +105,13 @@ export class TemplateComponent implements OnInit, OnDestroy, ITemplate {
 
 
   /** @hidden*/
-  temlpateService: TemplateService;
+  templateService: TemplateService;
 
   constructor(injector: Injector, private componentFactoryResolver: ComponentFactoryResolver,
               heartbeatService: HeartbeatService, private scheduleService:ScheduleService, private element: ElementRef,   private settingsService: SettingsService) {
     this.model = injector.get('model', '');
 
-    this.temlpateService = injector.get('templateService', null);
+    this.templateService = injector.get('templateService', null);
     // if(injector.get('sclass', null)){
     //   this.class=injector.get('sclass', null);
     // }
@@ -117,6 +125,7 @@ export class TemplateComponent implements OnInit, OnDestroy, ITemplate {
 
       }
     );
+
 
 
   }
@@ -262,7 +271,7 @@ export class TemplateComponent implements OnInit, OnDestroy, ITemplate {
       const runnable: any = eval(result);
        try {
         runnable.Run("RUN!").then((res) => {
-          this.temlpateService.templateInitialized();
+          this.templateService.templateInitialized();
           this.start();
         }).catch((err) => {
           console.log('Script Error ', err);
@@ -356,7 +365,7 @@ export class TemplateComponent implements OnInit, OnDestroy, ITemplate {
       });
       inputProviders.push({
         provide: 'templateService',
-        useValue: this.temlpateService
+        useValue: this.templateService
       });
 
       inputProviders.push({
@@ -373,22 +382,15 @@ export class TemplateComponent implements OnInit, OnDestroy, ITemplate {
 
 
 
-      // const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-      // const component = this.container.createComponent(componentFactory);
 
-      const resolvedInputs = ReflectiveInjector.resolve(inputProviders);
 
-      // We create an injector out of the data we want to pass down and this components injector
-      const injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs);
+      const injector = Injector.create({providers: inputProviders});
 
       // We create a factory out of the component we want to create
       const factory = this.componentFactoryResolver.resolveComponentFactory(type);
 
-      // We create the component using the factory and the injector
-      const component = factory.create(injector);
       // We insert the component into the dom container
       const obj = this.template.createComponent(factory, 0, injector);
-
 
 
       (<any>obj.instance).componentId = model.id;
@@ -399,7 +401,7 @@ export class TemplateComponent implements OnInit, OnDestroy, ITemplate {
   }
   /** @hidden*/
   ngOnDestroy() {
-    this.temlpateService.templateTerminated();
+    this.templateService.templateTerminated();
   }
 
   /** @hidden*/

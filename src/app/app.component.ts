@@ -1,6 +1,16 @@
 import {
-  Component, ComponentFactoryResolver, ReflectiveInjector, ViewChild,
-  ViewContainerRef, HostListener, EventEmitter, ComponentRef, OnDestroy, ElementRef
+  Component,
+  ComponentFactoryResolver,
+  ViewChild,
+  ViewContainerRef,
+  HostListener,
+  EventEmitter,
+  ComponentRef,
+  OnDestroy,
+  ElementRef,
+  ApplicationRef,
+  OnInit,
+  Injector
 } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/interval';
@@ -13,17 +23,13 @@ import {SmartScheduleService} from "../providers/smart-schedule-service";
 import {TemplateService} from "../providers/template-service";
 import {AffidavitService} from "../providers/affidavits-service";
 import * as moment from 'moment-timezone';
-import * as SunCalc from 'suncalc';
 import {TimezoneTranslateService} from "../providers/timezone-translate-service";
 import {PlatformResolverService} from "../providers/platform-resolver-service-public";
 
 
-import EventEmitterNode = NodeJS.EventEmitter;
 import alertSchedule from "./alertSchedule";
-import {HttpErrorResponse} from "@angular/common/http";
 import {SettingsService} from "../providers/settings-service";
 import {ImpressionService} from "../providers/impression-service";
-import * as uuid from 'uuid';
 import {beacon} from "./models/Beacon";
 import BeaconRootObject = beacon.BeaconRootObject;
 import {command} from "./models/Command";
@@ -42,16 +48,10 @@ declare const verifyPackage: any;
 declare const writeRegKey: any;
 /**@hidden*/
 declare const downloadAssets: any;
-/**@hidden*/
-declare const assetLoader: EventEmitterNode;
-/**@hidden*/
-declare const canStart: any;
+
 /**@hidden*/
 declare const rebootDevice: any;
-/**@hidden*/
-declare const require: any;
-/**@hidden*/
-declare const takeOverConsole: any;
+
 /**@hidden*/
 declare const BSDeviceInfo: any;
 
@@ -59,20 +59,17 @@ declare const BSDeviceInfo: any;
 /**@hidden*/
 declare const activateFaceAnalytics: any;
 
-
-
 /**@hidden*/
-export enum KEY_CODE {
-  UP_ARROW = 38,
-  DOWN_ARROW = 40
-}
+declare const keypress: any;
+
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class Controller implements OnDestroy {
+export class Controller implements OnDestroy, OnInit {
   /**@hidden*/
   @ViewChild('dialog', {static: true}) dialog: ElementRef;
   /**@hidden*/
@@ -80,7 +77,6 @@ export class Controller implements OnDestroy {
   /**@hidden*/
   settings = false;
   /**@hidden*/
-  // todo unsubscribe
   counter: Observable<any>;
   /**@hidden*/
   scheduleCounter: Observable<any>;
@@ -103,8 +99,6 @@ export class Controller implements OnDestroy {
   /**@hidden*/
   downloading = false;
 
-  /**@hidden*/
-  qrCode = this.platform.getAssetsPath()+'/assets/img/transparent.png';
   /**
    * Use Subscribe format. Will receive https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent on callback.
    * @see https://angular.io/api/core/EventEmitter
@@ -135,8 +129,7 @@ export class Controller implements OnDestroy {
   loadingError = null;
   /**@hidden*/
   nothing = false;
-  /**@hidden*/
-  regKey:string = null;
+
   /**@hidden*/
   currentActivationCode:string = null;
   /**@hidden*/
@@ -145,8 +138,7 @@ export class Controller implements OnDestroy {
   player = {
     version:'1.27'
   };
-  /**@hidden*/
-  alertMode = false;
+
   /**
    * Use Subscribe format. Will receive [[CommandRootObject]] on callback.
    * @see https://angular.io/api/core/EventEmitter
@@ -195,134 +187,20 @@ export class Controller implements OnDestroy {
               private timezoneTranslateService: TimezoneTranslateService,
               private settingsService: SettingsService,
               public platform:PlatformResolverService,
-              public testing:ImpressionService) {
-
-    this.onCommandCallback = this.commandService.onReceivedCommand;
-    this.onTemplateInitialized = this.templateService.onTemplateInitialized;
-    this.onTemplateTerminated = this.templateService.onTemplateTerminated;
-    this.onMediaPlayed = this.affidavitService.onMediaPlayed;
-    window['player'] = this.player;
-    window['moment'] = moment;
-    window['debugLog'] = function() {
-      if(false) {
-        // console.log(arguments);
-      }
-    };
-
-    this.settingsService.readSettings().then((settings:any)=>{
-      if(settings && settings.general && settings.general["face detection"]){
-        if(settings.general["face detection"].enabled){
-          activateFaceAnalytics(settings.general["face detection"].rate);
-        }
-      }
-    });
+              public testing:ImpressionService,
+              private app: ApplicationRef) {
 
 
-    // setInterval(()=>{
-    //   this.sendCommand([{name:"wifiImpression",arg:"wifi|32|2018-12-02T21:15:02Z|c4:93:d9:7d:57:90|4005|-90"}], false)
-    // }, 1000);
-    // // setInterval(()=>{
-    // //   this.sendCommand([this.blankImpression], false)
-    // // }, 1000);
-    //
-    // setInterval(()=>{
-    //   this.sendCommand([this.faceImpression], false)
-    // }, 1250);
+      let listener = new keypress.Listener();
+      // If you want to register a sequence combo
+      listener.sequence_combo("m e n u", ()=> {
+        console.log('open menu');
+        this.toggleSettings();
+      }, true);
 
-    const assetsDoneCallback = () => {
-      window['debugLog']('package done downloading');
-      console.log('Package Finished Downloading');
-      this.downloading = false;
-      this.heartbeatService.removeStatus(2);
-      this.startPackage();
-    };
-
-    const assetsStartedCallback = () => {
-      window['debugLog']('packaged started downloading');
-      this.downloading = true;
-      this.heartbeatService.addStatus(2);
-      console.log('Package Starting Downloading');
-    };
-
-    const assestsErrorCallback = () => {
-      window['debugLog']('package error');
-      console.log('There Was an Issue Downloading The Package');
-      this.downloading = false;
-      this.heartbeatService.removeStatus(2);
-    };
-
-
-    // console.log(takeOverConsole, environment);
-
-    // if((typeof takeOverConsole) !== 'undefined') {
-    //   takeOverConsole();
-    // }
-
-
-
-
-    if((typeof assetLoader) !== 'undefined') {
-      assetLoader.on('done', assetsDoneCallback);
-      assetLoader.on('started', assetsStartedCallback);
-      assetLoader.on('error', assestsErrorCallback);
-    }
-
-    window['assestsErrorCallback'] = assestsErrorCallback;
-    window['assetsStartedCallback'] = assetsStartedCallback;
-    window['assetsDoneCallback'] = assetsDoneCallback;
-
-    localStorage.setItem('lastModified','');
-    this.counter = Observable.interval(this.timer*1000);
-    this.scheduleCounter = Observable.interval(30*60*1000);
-    this.smartCounter = Observable.interval(2*1000);
-
-
-
-    window['Controller'] = this;
-
-    this.sub1 = this.commandService.onReceivedCommand.subscribe(
-      (command) => {
-        // console.log('command', command);
-        switch (command.name) {
-          case 'getpackage':
-            this.newSchedule();
-            break;
-          case 'reboot':
-            this.reboot();
-            break;
-          case 'truncaffidavit':
-            this.affidavitService.truncateDB();
-            break;
-          case 'sendlog':
-            this.affidavitService.sendList();
-            break;
-          case 'reload':
-            this.reload();
-            break;
-          case 'alert':
-            this.activateAlert(this.commandService.getLastCommand().arg);
-            break;
-          case 'BeaconEnter':
-            this.onBeaconCallback.emit(command.arg as BeaconRootObject);
-            break;
-          default:
-            break;
-        }
-      }
-    );
-    // screenLog.init(this._options);
-    // screenLog.toggle();
-    if(this.scheduleService.isActivated()) {
-      this.newSchedule();
-    } else {
-      this.activateDevice();
-    }
   }
 
 
-  getUniqueId(){
-    return uuid.v4();
-  }
 
   rebootSettingsModal(){
     this.dialog.nativeElement.showModal();
@@ -336,7 +214,7 @@ export class Controller implements OnDestroy {
 
   /**@hidden*/
   toggleSettings() {
-    this.showSettings = this.showSettings === true ? false : true;
+    this.showSettings = this.showSettings !== true;
     if(this.settings==false){
       if(this.settingsService.shouldReboot){
         this.rebootSettingsModal()
@@ -348,7 +226,7 @@ export class Controller implements OnDestroy {
   setPreview() {
     if(!this.preview) {
       this.preview = true;
-      let eventTime= 0; // Timestamp - Sun, 21 Apr 2013 13:00:00 GMT
+      let eventTime; // Timestamp - Sun, 21 Apr 2013 13:00:00 GMT
       let currentTime = moment().second(); // Timestamp - Sun, 21 Apr 2013 12:30:00 GMT
       eventTime = currentTime + (10 * 60);
       let diffTime = eventTime - currentTime;
@@ -377,12 +255,9 @@ export class Controller implements OnDestroy {
 
   /**@hidden*/
   startPackage() {
-    window['debugLog']('start package');
     this.scheduleService.getLocalSchedule().subscribe((result:any) => {
       try {
         this.initLocalSchedule(result);
-        window['debugLog']('Received Package');
-
       } catch (e) {
         console.log(e);
       }
@@ -482,7 +357,7 @@ export class Controller implements OnDestroy {
         this.currentActivationCode = null;
         this.newSchedule();
       },
-      (error: HttpErrorResponse) => {
+      () => {
         setTimeout(() => {
           this.poll(regKey);
         },1.5*1000);
@@ -495,7 +370,6 @@ export class Controller implements OnDestroy {
 
   /**@hidden*/
   newSchedule() {
-    window['debugLog']('new schedule');
     this.nothing = false;
     this.loading = true;
     this.heartbeatService.sendPing();
@@ -515,7 +389,7 @@ export class Controller implements OnDestroy {
             localStorage.setItem('lastModified', data.headers.get("last-modified"));
             data = data.body;
             if (data && data.reveldigital && data.reveldigital.timezone) {
-              let t:any =this.timezoneTranslateService.setTimezone(data.reveldigital.timezone)
+              let t:any =this.timezoneTranslateService.setTimezone(data.reveldigital.timezone);
               moment.tz.setDefault(t);
             }
             this.loading = false;
@@ -550,10 +424,9 @@ export class Controller implements OnDestroy {
 
   /**@hidden*/
   initLocalSchedule(data) {
-    window['debugLog']('local schedule initialized');
     if(data && verifyPackage()) {
       if (data.reveldigital && data.reveldigital.timezone) {
-        let t:any =this.timezoneTranslateService.setTimezone(data.reveldigital.timezone)
+        let t:any =this.timezoneTranslateService.setTimezone(data.reveldigital.timezone);
         moment.tz.setDefault(t);
       }
       this.loading = false;
@@ -572,20 +445,20 @@ export class Controller implements OnDestroy {
 
   /**@hidden*/
   private checkNormalSchedule(schedule) {
-    return this.smartScheduleService.eval([{type: "BeforeTime", sequence: 0, value1: "10/08/2019 "+this.formatTime(schedule.endtime), value2: "", value3: "", complement: false, operator: 0, value4: ""},
-      {type: "AfterTime", sequence: 1, value1: "10/08/2019 "+this.formatTime(schedule.starttime), value2: "", value3: "", complement: false, operator: 0, value4: ""},
+    return this.smartScheduleService.eval([{type: "BeforeTime", sequence: 0, value1: "10/08/2019 "+Controller.formatTime(schedule.endtime), value2: "", value3: "", complement: false, operator: 0, value4: ""},
+      {type: "AfterTime", sequence: 1, value1: "10/08/2019 "+Controller.formatTime(schedule.starttime), value2: "", value3: "", complement: false, operator: 0, value4: ""},
       {type: "DaysOfWeek", sequence: 4, value1: schedule.days, value2: "", value3: "", complement: false, operator: 0, value4: ""}])
   }
   /**@hidden*/
-  private formatTime(time){
+  private static formatTime(time){
     time = time.split(':'); // convert to array
 
 // fetch
-    var hours = parseInt(time[0]);
-    var minutes = parseInt(time[1]);
+    const hours = parseInt(time[0]);
+    const minutes = parseInt(time[1]);
 
 // calculate
-    var timeValue;
+    let timeValue;
 
     if (hours > 0 && hours <= 12) {
       timeValue= "" + hours;
@@ -596,7 +469,8 @@ export class Controller implements OnDestroy {
     }
 
     timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
-    return timeValue += (hours >= 12) ? ":00 PM" : ":00 AM";  // get AM/PM
+    timeValue += (hours >= 12) ? ":00 PM" : ":00 AM";  // get AM/PM
+    return timeValue;
   }
 
   /**@hidden*/
@@ -604,13 +478,12 @@ export class Controller implements OnDestroy {
     let template = null;
     let commands = null;
     for (let i = 0; i < this._currentSchedule.reveldigital.schedule.length; i++) {
-      //todo create schedule var
+
       if ((this._currentSchedule.reveldigital.schedule[i].conditions && this._currentSchedule.reveldigital.schedule[i].conditions.length>0 && this.smartScheduleService.eval(this._currentSchedule.reveldigital.schedule[i].conditions) ||
         (this._currentSchedule.reveldigital.schedule[i].conditions && this._currentSchedule.reveldigital.schedule[i].conditions == 0 && this.checkNormalSchedule(this._currentSchedule.reveldigital.schedule[i])) )
       ) {
         template = this._currentSchedule.reveldigital.schedule[i].template;
         if(this._currentSchedule.reveldigital.schedule[i].playlist) {
-          window['debugLog']('template is a playlist');
           template =  {
             "id": 10000,
               "opaqueid": "playlist",
@@ -647,7 +520,6 @@ export class Controller implements OnDestroy {
     if (template) {
       if (JSON.stringify(template) !== JSON.stringify(this.currentTemplateModule)) {
         if (this.currentTemplate) {
-          window['debugLog']('destroyed playlist');
           this.destroyTemplate();
         }
         this.currentTemplateModule = template;
@@ -664,7 +536,6 @@ export class Controller implements OnDestroy {
       this.currentTemplateModule = null;
       this.currentTemplate = null;
       this.destroyTemplate();
-      window['debugLog']('destroyed template. Nothing to play');
       if(commands) {
         this.sendCommand(commands);
       }
@@ -673,7 +544,6 @@ export class Controller implements OnDestroy {
 
   /**@hidden*/
   private createTemplate(template, main = true, addClass) {
-    window['debugLog']('Create Template');
     const inputProviders = [];
     inputProviders.push({
       provide: 'model',
@@ -688,10 +558,11 @@ export class Controller implements OnDestroy {
       useValue: addClass
     });
     // console.log(aclass);
-    const resolvedInputs = ReflectiveInjector.resolve(inputProviders);
-
-    // We create an injector out of the data we want to pass down and this components injector
-    const injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs, this.container.parentInjector);
+    const injector = Injector.create({providers: inputProviders});
+    // const resolvedInputs = ReflectiveInjector.resolve(inputProviders);
+    //
+    // // We create an injector out of the data we want to pass down and this components injector
+    // const injector = ReflectiveInjector.fromResolvedProviders(resolvedInputs, this.container.parentInjector);
 
     // We create a factory out of the component we want to create
     const factory = this.componentFactoryResolver.resolveComponentFactory(TemplateComponent);
@@ -720,21 +591,13 @@ export class Controller implements OnDestroy {
   /**@hidden*/
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    // console.log(event);
-    if (event.keyCode === KEY_CODE.UP_ARROW) {
-      // screenLog.toggle();
-    }
-    if (event.keyCode === KEY_CODE.DOWN_ARROW) {
-      this.settingsToggle();
-    }
-
     this.smartScheduleService.setLastKey(event.key);
   }
 
 
   /**@hidden*/
   settingsToggle() {
-    this.settings = this.settings ? false : true;
+    this.settings = !this.settings;
   }
 
 
@@ -801,6 +664,7 @@ export class Controller implements OnDestroy {
    * Returns the version of the player app.
    */
   getVersionCode() {
+   //todo
   }
 
   /**
@@ -834,6 +698,113 @@ export class Controller implements OnDestroy {
     this.sub2.unsubscribe();
     this.sub3.unsubscribe();
     this.sub4.unsubscribe();
+  }
+
+  ngOnInit(): void {
+
+    this.onCommandCallback = this.commandService.onReceivedCommand;
+    this.onTemplateInitialized = this.templateService.onTemplateInitialized;
+    this.onTemplateTerminated = this.templateService.onTemplateTerminated;
+    this.onMediaPlayed = this.affidavitService.onMediaPlayed;
+    window['player'] = this.player;
+    window['moment'] = moment;
+
+
+    this.settingsService.readSettings().then((settings:any)=>{
+      if(settings && settings.general && settings.general["face detection"]){
+        if(settings.general["face detection"].enabled){
+          activateFaceAnalytics(settings.general["face detection"].rate);
+        }
+      }
+    });
+
+
+    // setInterval(()=>{
+    //   this.sendCommand([{name:"wifiImpression",arg:"wifi|32|2018-12-02T21:15:02Z|c4:93:d9:7d:57:90|4005|-90"}], false)
+    // }, 1000);
+    // // setInterval(()=>{
+    // //   this.sendCommand([this.blankImpression], false)
+    // // }, 1000);
+    //
+    // setInterval(()=>{
+    //   this.sendCommand([this.faceImpression], false)
+    // }, 1250);
+
+    const assetsDoneCallback = () => {
+      console.log('Package Finished Downloading');
+      this.downloading = false;
+      this.heartbeatService.removeStatus(2);
+      this.startPackage();
+    };
+
+    const assetsStartedCallback = () => {
+      this.downloading = true;
+      this.heartbeatService.addStatus(2);
+      console.log('Package Starting Downloading');
+    };
+
+    const assetsErrorCallback = () => {
+      console.log('There Was an Issue Downloading The Package');
+      this.downloading = false;
+      this.heartbeatService.removeStatus(2);
+    };
+
+
+    // if((typeof assetLoader) !== 'undefined') {
+    //   assetLoader.on('done', assetsDoneCallback);
+    //   assetLoader.on('started', assetsStartedCallback);
+    //   assetLoader.on('error', assetsErrorCallback);
+    // }
+
+    window['assetsErrorCallback'] = assetsErrorCallback;
+    window['assetsStartedCallback'] = assetsStartedCallback;
+    window['assetsDoneCallback'] = assetsDoneCallback;
+
+    localStorage.setItem('lastModified','');
+    this.counter = Observable.interval(this.timer*1000);
+    this.scheduleCounter = Observable.interval(30*60*1000);
+    this.smartCounter = Observable.interval(2*1000);
+
+
+
+    window['Controller'] = this;
+
+    this.sub1 = this.commandService.onReceivedCommand.subscribe(
+      (command) => {
+        // console.log('command', command);
+        switch (command.name) {
+          case 'getpackage':
+            this.newSchedule();
+            break;
+          case 'reboot':
+            this.reboot();
+            break;
+          case 'truncaffidavit':
+            this.affidavitService.truncateDB();
+            break;
+          case 'sendlog':
+            this.affidavitService.sendList();
+            break;
+          case 'reload':
+            this.reload();
+            break;
+          case 'alert':
+            this.activateAlert(this.commandService.getLastCommand().arg);
+            break;
+          case 'BeaconEnter':
+            this.onBeaconCallback.emit(command.arg as BeaconRootObject);
+            break;
+          default:
+            break;
+        }
+      }
+    );
+
+    if(this.scheduleService.isActivated()) {
+      this.newSchedule();
+    } else {
+      this.activateDevice();
+    }
   }
 
 

@@ -15,8 +15,6 @@ import {SmartScheduleService} from "../../../providers/smart-schedule-service";
 })
 export class MarqueeComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   /** @hidden*/
-  Feed = require('rss-to-json');
-  /** @hidden*/
   currentFeed = {};
   /** @hidden*/
   list;
@@ -66,17 +64,17 @@ export class MarqueeComponent extends BaseComponent implements OnInit, AfterView
   getRSS() {
     if (this.model.playlist && this.model.playlist.hasOwnProperty('source')) {
       for (let indx = 0; indx < this.model.playlist.source.length; indx++) {
-        this.Feed.load(this.corsUrl + this.model.playlist.source[indx].value, (err, rss) => {
-          if(rss) {
-            rss = rss.items.map(val => this.formatDescription(val.description, this.model.playlist.source[indx].conditions))
-              .filter(val => val != null);
-            if (this.model.playlist.source[indx].id && rss) {
-              this.currentFeed[this.model.playlist.source[indx].id] = rss;
-            }
-          }
-          // this.list=[{text:'test',isValid:true}];
-          this.items();
-        });
+        // Feed.load(this.corsUrl + this.model.playlist.source[indx].value, (err, rss) => {
+        //   if(rss) {
+        //     rss = rss.items.map(val => this.formatDescription(val.description, this.model.playlist.source[indx].conditions))
+        //       .filter(val => val != null);
+        //     if (this.model.playlist.source[indx].id && rss) {
+        //       this.currentFeed[this.model.playlist.source[indx].id] = rss;
+        //     }
+        //   }
+        //   // this.list=[{text:'test',isValid:true}];
+        //   this.items();
+        // });
       }
     }
   }
